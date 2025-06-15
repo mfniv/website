@@ -1,14 +1,71 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Games Hub</title>
+  <title>Game Hub</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .tile-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 0 20px;
+    }
+    .tile {
+      background-color: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .tile:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    }
+    .tile a {
+      color: #00bfff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .tile .subtitle {
+      font-size: 14px;
+      color: #bbbbbb;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to the Game Hub</h1>
-  <ul>
-    <li><a href="nyadwv1/">Play: Not Another Drill Weekend</a></li>
-    <li><a href="anothergame/">Play: Another Game</a></li>
-  </ul>
+  <h1>🎮 MFNIV Game Hub</h1>
+  <div class="tile-container">
+    <div class="tile">
+      <a href="not-another-drill-pvt/">Not Another Drill Weekend</a>
+      <div class="subtitle">PVT Edition</div>
+    </div>
+    <div class="tile">
+      <a href="not-another-drill-warrant/">Not Another Drill Weekend</a>
+      <div class="subtitle">Warrant Edition</div>
+    </div>
+    <div class="tile">
+      <a href="escape-ft-dix/">Escape from Ft. Dix</a>
+      <div class="subtitle">Survive and Escape</div>
+    </div>
+    <div class="tile">
+      <div style="color: gray;">Coming Soon</div>
+      <div class="subtitle">New Game Unlocks Soon</div>
+    </div>
+  </div>
 </body>
 </html>
