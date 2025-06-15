@@ -1,1 +1,261 @@
-<h1>Welcome to the Games Page</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Not Your Average Drill Weekend</title>
+  <style>
+    body { background: #191e2a; color: #eee; font-family: Arial, sans-serif; margin: 0; text-align: center; overflow-x: hidden; }
+    canvas { background: #181b2d; border: 2px solid #335; margin: 20px auto 0 auto; display: block; border-radius: 14px; max-width: 100%; height: auto; }
+    .controls { margin: 6px auto; user-select: none; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .control-row { display: flex; justify-content: center; gap: 6px; }
+    #sleepBtn, .arrowBtn { font-size: 26px; width: 70px; height: 70px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; background: #3b6dc2; color: #fff; }
+    .arrowBtn { background: #3c445e; }
+    #resetBtn { margin: 8px auto; padding: 6px 14px; font-size: 14px; border-radius: 6px; border: none; background: #666; color: #fff; display: block; }
+    #scoreDisplay, #timerDisplay {
+      position: fixed;
+      top: 12px;
+      font-size: 14px;
+      background: rgba(0,0,0,0.5);
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: #00f2ff;
+    }
+    #scoreDisplay { right: 12px; }
+    #timerDisplay { left: 12px; }
+    #overlay, #endOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    #overlay button, #endOverlay button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border-radius: 8px;
+      border: none;
+      background: #00f2ff;
+      color: #000;
+      font-weight: bold;
+    }
+    #caught { font-size: 24px; font-weight: bold; color: #00f2ff; margin-top: 12px; animation: flash 1s infinite alternate; }
+    @keyframes flash {
+      0% { opacity: 1; }
+      100% { opacity: 0.4; }
+    }
+    #finalScore { font-size: 16px; color: #00f2ff; margin-top: 6px; }
+    .directions { font-size: 14px; color: #ccc; margin: 10px auto 20px auto; max-width: 90%; user-select: none; }
+  </style>
+</head>
+<body>
+  <div id="overlay">
+    <h2>Not Your Average Drill Weekend</h2>
+    <p>Use arrow keys or buttons to move. Hold Z or press the sleep button to rest. Avoid NCOs and get to 100% sleep!</p>
+    <button onclick="startGame()">Start</button>
+  </div>
+  <div id="endOverlay" style="display:none">
+    <h2>Full Sleep Achieved!</h2>
+    <div id="finalScore"></div>
+    <button onclick="restartGame()">Retry</button>
+  </div>
+
+  <div id="scoreDisplay">Score: 10000</div>
+  <div id="timerDisplay">Time: 0s</div>
+  <canvas id="game" width="520" height="350"></canvas>
+  <div class="controls">
+    <div class="control-row"><button id="up" class="arrowBtn">⬆️</button></div>
+    <div class="control-row">
+      <button id="left" class="arrowBtn">⬅️</button>
+      <button id="sleepBtn">😴</button>
+      <button id="right" class="arrowBtn">➡️</button>
+    </div>
+    <div class="control-row"><button id="down" class="arrowBtn">⬇️</button></div>
+  </div>
+  <button id="resetBtn">Reset</button>
+  <div id="caught"></div>
+  <div class="directions">Reach 100% sleep as fast as you can. NCOs reduce sleep and points. Score decreases over time!</div>
+
+  <script>
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width;
+    const H = canvas.height;
+
+    let player, ncos, sleepScore = 0, sleeping = false, sleepHeld = false, won = false;
+    let interval, startTime, score = 10000, lastHitTime = 0, hitFlashTime = 0, timer = 0;
+    let durationSeconds = 0;
+
+    function resetGame() {
+      player = { x: 70, y: 180, r: 20, flash: false };
+      ncos = Array.from({length: 2}, () => {
+        const angle = Math.random() * Math.PI * 2;
+        return {
+          x: 100 + Math.random() * 300,
+          y: 60 + Math.random() * 220,
+          vx: 2 * Math.cos(angle),
+          vy: 2 * Math.sin(angle),
+        };
+      });
+      sleepScore = 0; sleeping = false; sleepHeld = false;
+      won = false; timer = 0; startTime = null; score = 10000; durationSeconds = 0;
+      lastHitTime = 0; hitFlashTime = 0;
+      document.getElementById('caught').textContent = '';
+      document.getElementById('scoreDisplay').textContent = 'Score: 10000';
+      document.getElementById('timerDisplay').textContent = 'Time: 0s';
+    }
+
+    function drawPlayer() {
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, player.r, 0, Math.PI * 2);
+      ctx.fillStyle = "#56e96d";
+      ctx.fill();
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.font = "26px Arial";
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#242";
+      ctx.fillText(player.flash && performance.now() - hitFlashTime < 300 ? "🫡" : sleeping ? "😴" : "🪖", player.x, player.y + 10);
+      if (performance.now() - hitFlashTime >= 300) player.flash = false;
+    }
+
+    function drawNCO(nco) {
+      ctx.beginPath();
+      ctx.arc(nco.x, nco.y, 19, 0, Math.PI * 2);
+      ctx.fillStyle = "#191b22";
+      ctx.fill();
+      ctx.strokeStyle = "#FFD600";
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.moveTo(nco.x - 13, nco.y + i * 8);
+        ctx.lineTo(nco.x, nco.y - 10 + i * 8);
+        ctx.lineTo(nco.x + 13, nco.y + i * 8);
+        ctx.stroke();
+      }
+    }
+
+    function drawSleepBar() {
+      ctx.save();
+      ctx.fillStyle = "#444";
+      ctx.fillRect(W / 2 - 110, 20, 220, 18);
+      ctx.fillStyle = "#26fbb7";
+      ctx.fillRect(W / 2 - 110, 20, 220 * (sleepScore / 100), 18);
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(W / 2 - 110, 20, 220, 18);
+      ctx.fillStyle = "#fff";
+      ctx.font = "14px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(`Sleep Score: ${Math.floor(sleepScore)}%`, W / 2, 33);
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      drawSleepBar();
+      drawPlayer();
+      ncos.forEach(drawNCO);
+    }
+
+    function updateGame(now) {
+      if (!startTime) startTime = now;
+      let dt = (now - (timer || now)) / 1000;
+      timer = now;
+      durationSeconds = Math.floor((now - startTime) / 1000);
+      score = Math.max(0, 10000 - durationSeconds * 20);
+
+      ncos.forEach(nco => {
+        nco.x += nco.vx;
+        nco.y += nco.vy;
+        if (nco.x < 19 || nco.x > W - 19) nco.vx *= -1;
+        if (nco.y < 19 || nco.y > H - 19) nco.vy *= -1;
+        const dx = nco.x - player.x, dy = nco.y - player.y;
+        if (Math.hypot(dx, dy) < 39 && now - lastHitTime > 500) {
+          sleepScore = Math.max(0, sleepScore - 5);
+          score = Math.max(0, score - 100);
+          lastHitTime = now;
+          hitFlashTime = now;
+          player.flash = true;
+        }
+      });
+
+      if (!won && sleepHeld) {
+        sleeping = true;
+        sleepScore += 2 * dt;
+        if (sleepScore >= 100) {
+          sleepScore = 100;
+          won = true;
+          document.getElementById('scoreDisplay').textContent = '';
+          document.getElementById('timerDisplay').textContent = '';
+          document.getElementById('caught').textContent = 'FULL SLEEP! YOU WIN!';
+          document.getElementById('finalScore').textContent = `Final Score: ${score} | Duration: ${durationSeconds}s`;
+          document.getElementById('endOverlay').style.display = 'flex';
+        }
+      } else {
+        sleeping = false;
+      }
+
+      draw();
+      if (!won) {
+        document.getElementById('scoreDisplay').textContent = `Score: ${score}`;
+        document.getElementById('timerDisplay').textContent = `Time: ${durationSeconds}s`;
+        interval = requestAnimationFrame(updateGame);
+      }
+    }
+
+    function move(dx, dy) {
+      let nx = player.x + dx;
+      let ny = player.y + dy;
+      if (nx > 20 && nx < W - 20) player.x = nx;
+      if (ny > 20 && ny < H - 20) player.y = ny;
+      draw();
+    }
+
+    function startGame() {
+      document.getElementById('overlay').style.display = 'none';
+      resetGame();
+      draw();
+      interval = requestAnimationFrame(updateGame);
+    }
+
+    function restartGame() {
+      document.getElementById('endOverlay').style.display = 'none';
+      resetGame();
+      draw();
+      interval = requestAnimationFrame(updateGame);
+    }
+
+    document.getElementById('sleepBtn').onmousedown = () => { if (!won) sleepHeld = true; };
+    document.getElementById('sleepBtn').onmouseup = () => { sleepHeld = false; };
+    document.getElementById('sleepBtn').ontouchstart = e => { sleepHeld = true; e.preventDefault(); };
+    document.getElementById('sleepBtn').ontouchend = () => { sleepHeld = false; };
+    document.getElementById('resetBtn').onclick = restartGame;
+
+    document.getElementById('left').onclick = () => move(-28, 0);
+    document.getElementById('right').onclick = () => move(28, 0);
+    document.getElementById('up').onclick = () => move(0, -28);
+    document.getElementById('down').onclick = () => move(0, 28);
+
+    window.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') move(-28, 0);
+      if (e.key === 'ArrowRight') move(28, 0);
+      if (e.key === 'ArrowUp') move(0, -28);
+      if (e.key === 'ArrowDown') move(0, 28);
+      if (e.code === 'Space' || e.key.toLowerCase() === 'z') sleepHeld = true;
+    });
+    window.addEventListener('keyup', e => {
+      if (e.code === 'Space' || e.key.toLowerCase() === 'z') sleepHeld = false;
+    });
+  </script>
+</body>
+</html>
