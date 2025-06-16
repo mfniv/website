@@ -21,11 +21,11 @@
   <canvas id="gameCanvas"></canvas>
 
   <script>
-    /* === CONFIG === */
-    const W=480,H=720;
+    /* === CONFIG (scaled for mobile) === */
+    const W=360,H=640;                       // logical canvas size (portrait)
     const PLAYER_SPD=140,ENEMY_SPD=40,LOOK_RATE=4;
-    const FOV_DEG=32;               // even narrower cone
-    const SEE_RANGE=160,HALO=40;
+    const FOV_DEG=32;
+    const SEE_RANGE=120,HALO=30;
     const STEALTH_LOSS=10;
     const SALUTE_GAP=0.35,SALUTE_SHOW=0.5;
 
@@ -35,29 +35,29 @@
     const overlay=document.getElementById('overlay');
     document.getElementById('startBtn').addEventListener('click',startGame);
     window.addEventListener('resize',resize);resize();
-    function resize(){const r=W/H;let w=innerWidth,h=innerHeight;w/h>r?w=h*r:h=w/r;canvas.width=w;canvas.height=h;}
+    function resize(){const r=W/H;let w=innerWidth,h=innerHeight;w/h>r?w=h*r:h=w/r;canvas.width=w;canvas.height=h;ctx.setTransform(w/W,0,0,h/H,0,0);} // scale drawing
 
-    /* === MAP === */
+    /* === MAP WALLS (0.75 scale) === */
     const walls=[
-      {x:0,y:0,w:480,h:20},{x:0,y:700,w:480,h:20},{x:0,y:0,w:20,h:720},{x:460,y:0,w:20,h:720},
-      {x:60,y:60,w:20,h:120},{x:60,y:160,w:100,h:20},{x:400,y:60,w:20,h:120},{x:300,y:160,w:120,h:20},
-      {x:200,y:260,w:20,h:200},{x:140,y:360,w:120,h:20},{x:220,y:360,w:120,h:20},{x:340,y:260,w:20,h:260},
-      {x:60,y:520,w:20,h:120},{x:60,y:620,w:100,h:20},{x:400,y:520,w:20,h:120},{x:300,y:620,w:120,h:20}
+      {x:0,y:0,w:360,h:15},{x:0,y:525,w:360,h:15},{x:0,y:0,w:15,h:540},{x:345,y:0,w:15,h:540},
+      {x:45,y:45,w:15,h:90},{x:45,y:120,w:75,h:15},{x:300,y:45,w:15,h:90},{x:225,y:120,w:90,h:15},
+      {x:150,y:195,w:15,h:150},{x:105,y:270,w:90,h:15},{x:165,y:270,w:90,h:15},{x:255,y:195,w:15,h:195},
+      {x:45,y:390,w:15,h:90},{x:45,y:465,w:75,h:15},{x:300,y:390,w:15,h:90},{x:225,y:465,w:90,h:15}
     ];
 
     /* === ENTITIES === */
-    class E{constructor(x,y,r,i){this.x=x;this.y=y;this.r=r;this.i=i;}}
-    class P extends E{constructor(){super(40,40,18,'🔳');this.state='free';this.t=0;}}
-    class N extends E{constructor(x,y){super(x,y,18,'🪖');this.md=Math.random()*Math.PI*2;this.ld=Math.random()*Math.PI*2;this.sal=false;}update(dt){this.x+=Math.cos(this.md)*ENEMY_SPD*dt;this.y+=Math.sin(this.md)*ENEMY_SPD*dt;if(this.x<this.r||this.x>canvas.width-this.r)this.md=Math.PI-this.md;if(this.y<this.r||this.y>canvas.height-this.r)this.md*=-1;this.ld+=(Math.random()-0.5)*LOOK_RATE*dt;}}
-    class C extends E{constructor(x,y){super(x,y,14,'☕️');this.got=false;}}
+    class Ent{constructor(x,y,r,i){this.x=x;this.y=y;this.r=r;this.i=i;}}
+    class Player extends Ent{constructor(){super(30,30,14,'🔳');this.state='free';this.t=0;}}
+    class Enemy extends Ent{constructor(x,y){super(x,y,14,'🪖');this.md=Math.random()*Math.PI*2;this.ld=Math.random()*Math.PI*2;this.sal=false;}update(dt){this.x+=Math.cos(this.md)*ENEMY_SPD*dt;this.y+=Math.sin(this.md)*ENEMY_SPD*dt;if(this.x<this.r||this.x>W-this.r)this.md=Math.PI-this.md;if(this.y<this.r||this.y>H-this.r)this.md*=-1;this.ld+=(Math.random()-0.5)*LOOK_RATE*dt;}}
+    class Coffee extends Ent{constructor(x,y){super(x,y,10,'☕️');this.got=false;}}
 
-    const player=new P();
-    const enemies=[new N(240,280),new N(320,480),new N(100,500),new N(380,300)];
-    const coffees=[new C(60,100),new C(420,100),new C(250,360),new C(60,660),new C(420,660)];
+    const player=new Player();
+    const enemies=[new Enemy(180,210),new Enemy(240,360),new Enemy(75,375),new Enemy(285,225)];
+    const coffees=[new Coffee(45,75),new Coffee(315,75),new Coffee(188,270),new Coffee(45,495),new Coffee(315,495)];
 
     /* === STATE === */
     let stealth=100,start=0,last=0,end=0,mode='init',tx=player.x,ty=player.y;
-    canvas.addEventListener('pointerdown',e=>{if(mode!=='playing')return;const b=canvas.getBoundingClientRect();tx=e.clientX-b.left;ty=e.clientY-b.top;});
+    canvas.addEventListener('pointerdown',e=>{if(mode!=='playing')return;const b=canvas.getBoundingClientRect();tx=(e.clientX-b.left)*(W/canvas.width);ty=(e.clientY-b.top)*(H/canvas.height);});
 
     function startGame(){overlay.style.display='none';mode='playing';start=performance.now();last=start;loop(start);}    
 
@@ -67,7 +67,7 @@
     function update(dt){
       if(player.state!=='waiting')move(dt);
       walls.forEach(w=>collide(player,w));
-      enemies.forEach(n=>{n.update(dt);walls.forEach(w=>collide(n,w)&& (n.md+=Math.PI));});
+      enemies.forEach(n=>{n.update(dt);walls.forEach(w=>collide(n,w)&&(n.md+=Math.PI));});
       coffees.forEach(c=>!c.got&&dist(player,c)<player.r+c.r&&(c.got=true));
       if(coffees.every(c=>c.got)){mode='won';end=performance.now();endScreen();}
       detect(dt);
@@ -76,25 +76,25 @@
     function move(dt){const dx=tx-player.x,dy=ty-player.y,d=Math.hypot(dx,dy);if(d>1){const s=Math.min(PLAYER_SPD*dt,d);player.x+=dx/d*s;player.y+=dy/d*s;}}
 
     function detect(dt){let spotted=false;
-      enemies.forEach(n=>{n.sal=false;const d=dist(player,n);const inHalo=d<HALO;const inCone=d<SEE_RANGE&&angle(player,n)<(FOV_DEG*Math.PI/180)/2&&!losBlocked(n,player);if(inHalo||inCone){n.sal=true;spotted=true;}});
+      enemies.forEach(n=>{n.sal=false;const d=dist(player,n);const halo=d<HALO;const cone=d<SEE_RANGE&&angle(player,n)<FOV_DEG*Math.PI/360&&!blocked(n,player);if(halo||cone){n.sal=true;spotted=true;}});
       if(spotted&&player.state==='free'){stealth=Math.max(0,stealth-STEALTH_LOSS);player.state='waiting';player.t=0;tx=player.x;ty=player.y;}
       if(player.state==='waiting'){player.t+=dt;if(player.t>=SALUTE_GAP){player.state='saluting';player.t=0;}}
       if(player.state==='saluting'){player.t+=dt;if(player.t>=SALUTE_SHOW){player.state='free';player.t=0;}}
     }
 
     /* === DRAW === */
-    function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#444';walls.forEach(w=>ctx.fillRect(w.x,w.y,w.w,w.h));ctx.font='28px sans-serif';coffees.forEach(c=>!c.got&&ctx.fillText('☕️',c.x-14,c.y+10));enemies.forEach(n=>{ctx.beginPath();ctx.arc(n.x,n.y,HALO,0,2*Math.PI);ctx.fillStyle='rgba(255,235,59,0.05)';ctx.fill();ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.arc(n.x,n.y,SEE_RANGE,n.ld-FOV_DEG*Math.PI/360,n.ld+FOV_DEG*Math.PI/360);ctx.closePath();ctx.fillStyle='rgba(255,235,59,0.12)';ctx.fill();ctx.fillStyle='#fff';ctx.fillText(n.sal?'🫡':'🪖',n.x-14,n.y+10);});ctx.fillStyle='#fff';ctx.fillText(player.state==='saluting'?'🫡':'🔳',player.x-14,player.y+10);ctx.font='18px sans-serif';ctx.fillText(`Stealth: ${Math.round(stealth)}%`,10,26);ctx.fillText(`Coffee: ${coffees.filter(c=>c.got).length}/5`,10,50);ctx.fillText(`Time: ${((performance.now()-start)/1000).toFixed(1)}s`,10,74);}
+    function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#444';walls.forEach(w=>ctx.fillRect(w.x,w.y,w.w,w.h));ctx.font='24px sans-serif';coffees.forEach(c=>!c.got&&ctx.fillText('☕️',c.x-12,c.y+8));enemies.forEach(n=>{ctx.beginPath();ctx.arc(n.x,n.y,HALO,0,2*Math.PI);ctx.fillStyle='rgba(255,235,59,0.05)';ctx.fill();ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.arc(n.x,n.y,SEE_RANGE,n.ld-FOV_DEG*Math.PI/360,n.ld+FOV_DEG*Math.PI/360);ctx.closePath();ctx.fillStyle='rgba(255,235,59,0.12)';ctx.fill();ctx.fillStyle='#fff';ctx.fillText(n.sal?'🫡':'🪖',n.x-12,n.y+8);});ctx.fillStyle='#fff';ctx.fillText(player.state==='saluting'?'🫡':'🔳',player.x-12,player.y+8);ctx.font='16px sans-serif';ctx.fillText(`Stealth: ${Math.round(stealth)}%`,8,22);ctx.fillText(`Coffee: ${coffees.filter(c=>c.got).length}/5`,8,42);ctx.fillText(`Time: ${((performance.now()-start)/1000).toFixed(1)}s`,8,62);}
 
     /* === END === */
     function endScreen(){const t=(end-start)/1000;const score=Math.max(0,Math.round(stealth*150 - t*30));overlay.innerHTML=`<h1>Mission Complete</h1><p>Time: ${t.toFixed(1)}s<br>Stealth: ${Math.round(stealth)}%<br>Score: ${score}</p><button id="restart">Play Again</button>`;overlay.style.display='flex';document.getElementById('restart').onclick=()=>location.reload();}
 
-    /* === UTILS === */
+    /* === UTIL === */
     function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}    
     function collide(c,r){const nx=Math.max(r.x,Math.min(c.x,r.x+r.w)),ny=Math.max(r.y,Math.min(c.y,r.y+r.h)),d=Math.hypot(c.x-nx,c.y-ny);if(d<c.r){const ov=c.r-d;c.x+=(c.x-nx)/d*ov;c.y+=(c.y-ny)/d*ov;return true;}return false;}
     function angle(a,b){return Math.abs(norm(Math.atan2(a.y-b.y,a.x-b.x)-b.ld));}
     function norm(a){while(a<-Math.PI)a+=2*Math.PI;while(a>Math.PI)a-=2*Math.PI;return a;}
-    function losBlocked(n,p){return walls.some(w=>segRect(n.x,n.y,p.x,p.y,w));}
-    function segRect(x1,y1,x2,y2,r){function lineInt(x3,y3,x4,y4){const den=(x1-x2)*(y3-y4)-(y1-y2)*(x3-x4);if(!den)return false;const t=((x1-x3)*(y3-y4)-(y1-y3)*(x3-x4))/den,u=((x1-x3)*(y1-y2)-(y1-y3)*(x1-x2))/den;return t>=0&&t<=1&&u>=0&&u<=1;}return lineInt(r.x,r.y,r.x+r.w,r.y)||lineInt(r.x+r.w,r.y,r.x+r.w,r.y+r.h)||lineInt(r.x+r.w,r.y+r.h,r.x,r.y+r.h)||lineInt(r.x,r.y+r.h,r.x,r.y);}
+    function blocked(n,p){return walls.some(w=>segRect(n.x,n.y,p.x,p.y,w));}
+    function segRect(x1,y1,x2,y2,r){function li(x3,y3,x4,y4){const d=(x1-x2)*(y3-y4)-(y1-y2)*(x3-x4);if(!d)return false;const t=((x1-x3)*(y3-y4)-(y1-y3)*(x3-x4))/d,u=((x1-x3)*(y1-y2)-(y1-y3)*(x1-x2))/d;return t>=0&&t<=1&&u>=0&&u<=1;}return li(r.x,r.y,r.x+r.w,r.y)||li(r.x+r.w,r.y,r.x+r.w,r.y+r.h)||li(r.x+r.w,r.y+r.h,r.x,r.y+r.h)||li(r.x,r.y+r.h,r.x,r.y);}
   </script>
 </body>
 </html>
