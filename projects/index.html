@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #0044cc;
+    }
+
+    .project-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .project-tile {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: 45%;
+      min-width: 300px;
+      padding: 20px;
+      text-align: left;
+      transition: transform 0.2s ease-in-out;
+      text-decoration: none;
+      color: black;
+    }
+
+    .project-tile:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .project-title {
+      font-size: 20px;
+      color: #0044cc;
+      margin-bottom: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .project-desc {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+      .project-tile {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🛠️ Projects</h1>
+
+  <div class="project-grid">
+    <a class="project-tile" href="https://account-scout-1027718286741.us-west1.run.app/" target="_blank">
+      <div class="project-title">Account Scout</div>
+      <div class="project-desc">Webapp for helping to identify and track your online footprint. Connects to your email providers to securely identify accounts and associated account data. Sort and filter to discover, uncover, and manage your accounts. Contact me if you want to help test! </div>
+    </a>
+
+    <a class="project-tile" href="https://wwmad.org" target="_blank">
+      <div class="project-title">WWMAD"</div>
+      <div class="project-desc">aka "What Would Marcus Aurelius Do? Seek counsel with the most famous Stoic thinkers of our history. This project is primarily aimed at researching and testing methods to increase current LLM's ability to provide output in a consistent and effective manner though one of the hardest lenses: Philosophy.</div>
+    </a>
+
+    <a class="project-tile" href="https://tackytinsel.com" target="_blank">
+      <div class="project-title">Coming Soon</div>
+      <div class="project-desc">Project launching soon. Check back for updates and early access opportunities.</div>
+    </a>
+
+    <a class="project-tile" href="https://cummerbund.org" target="_blank">
+      <div class="project-title">Coming Soon</div>
+      <div class="project-desc">Project launching soon. Check back for updates and early access opportunities.</div>
+    </a>
+  </div>
+</body>
+</html>
