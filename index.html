@@ -12,23 +12,21 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-1HWEWNB73S');
 </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MFNIV - Mike's Portfolio</title>
-    <meta name="description" content="The official coming soon page for MFNIV. A new digital presence showcasing professional endeavors, musings, and projects.">
-    
+    <meta name="description" content="The official portfolio of MFNIV. A digital presence showcasing professional endeavors, musings, and projects.">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-        /* --- Basic Reset & Dark Theme --- */
         * {
             margin: 0;
             padding: 0;
@@ -37,116 +35,390 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #121212;
+            background-color: #0a0a0f;
             color: #EAEAEA;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            text-align: center;
-            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        /* --- Main Content Container --- */
-        .container {
-            max-width: 600px;
+        /* --- Ambient Background --- */
+        .bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
         }
 
-        /* --- Typography --- */
-        h1 {
-            font-size: 4rem;
+        .ambient-glow {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .ambient-glow.glow-1 {
+            width: 600px;
+            height: 600px;
+            background: #00A8FF;
+            top: -200px;
+            right: -100px;
+            animation: drift1 20s ease-in-out infinite;
+        }
+
+        .ambient-glow.glow-2 {
+            width: 500px;
+            height: 500px;
+            background: #00A8FF;
+            bottom: -150px;
+            left: -100px;
+            animation: drift2 25s ease-in-out infinite;
+        }
+
+        @keyframes drift1 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-60px, 40px); }
+        }
+
+        @keyframes drift2 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(40px, -60px); }
+        }
+
+        /* --- Layout --- */
+        .page-wrapper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 680px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* --- Logo / Title --- */
+        .logo-mark {
+            font-family: 'Cinzel', serif;
+            font-size: 5rem;
             font-weight: 700;
-            letter-spacing: 4px;
+            letter-spacing: 8px;
             color: #FFFFFF;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            margin-bottom: 8px;
+            position: relative;
+            display: inline-block;
+            animation: fadeInUp 1s ease-out;
         }
 
-        h2 {
-            font-size: 1.5rem;
+        .logo-mark .accent {
+            color: #00A8FF;
+            text-shadow: 0 0 30px rgba(0, 168, 255, 0.4),
+                         0 0 60px rgba(0, 168, 255, 0.15);
+        }
+
+        .logo-mark::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00A8FF, transparent);
+        }
+
+        /* --- Tagline --- */
+        .tagline {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
             font-weight: 400;
-            color: #00A8FF; /* A vibrant accent color */
-            margin-bottom: 20px;
+            color: #5a6a7a;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out 0.2s both;
         }
 
-        p {
-            font-size: 1.1rem;
-            font-weight: 300;
-            color: #B0B0B0;
-            line-height: 1.6;
-            margin-bottom: 30px;
+        /* --- Divider --- */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 168, 255, 0.2), transparent);
+            margin: 10px 0 40px;
+            animation: fadeIn 1.5s ease-out 0.4s both;
         }
-        
-        /* --- Email Subscription Form --- */
+
+        /* --- Intro Text --- */
+        .intro {
+            font-size: 1.05rem;
+            font-weight: 300;
+            color: #8a9aaa;
+            line-height: 1.8;
+            margin-bottom: 44px;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .intro strong {
+            color: #c0d0e0;
+            font-weight: 400;
+        }
+
+        /* --- Navigation Cards --- */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 50px;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .nav-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 28px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(0, 168, 255, 0.08);
+            border-radius: 8px;
+            text-decoration: none;
+            color: #c0d0e0;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 168, 255, 0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .nav-card:hover {
+            background: rgba(0, 168, 255, 0.04);
+            border-color: rgba(0, 168, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-card:hover::before {
+            opacity: 1;
+        }
+
+        .nav-card .card-icon {
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+        }
+
+        .nav-card .card-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .nav-card .card-sub {
+            font-size: 0.75rem;
+            color: #5a6a7a;
+            margin-top: 6px;
+            font-weight: 300;
+        }
+
+        /* --- Email Section --- */
+        .email-section {
+            margin-bottom: 50px;
+            animation: fadeInUp 1s ease-out 0.8s both;
+        }
+
+        .email-section .section-label {
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #4a5a6a;
+            margin-bottom: 16px;
+        }
+
         .subscribe-form {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 10px;
-            margin-bottom: 40px;
         }
 
         .subscribe-form input[type="email"] {
             width: 100%;
             max-width: 300px;
-            padding: 15px;
-            border: 1px solid #444;
-            border-radius: 5px;
-            background-color: #222;
+            padding: 14px 18px;
+            border: 1px solid rgba(0, 168, 255, 0.12);
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.03);
             color: #FFFFFF;
             font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
+            font-size: 0.9rem;
+            font-weight: 300;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
         }
 
         .subscribe-form input[type="email"]::placeholder {
-            color: #888;
+            color: #4a5a6a;
+        }
+
+        .subscribe-form input[type="email"]:focus {
+            outline: none;
+            border-color: rgba(0, 168, 255, 0.35);
+            background-color: rgba(0, 168, 255, 0.04);
         }
 
         .subscribe-form button {
-            padding: 15px 25px;
-            border: none;
-            border-radius: 5px;
-            background-color: #00A8FF;
-            color: #FFFFFF;
+            padding: 14px 24px;
+            border: 1px solid rgba(0, 168, 255, 0.3);
+            border-radius: 6px;
+            background-color: rgba(0, 168, 255, 0.1);
+            color: #00A8FF;
             font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 1rem;
+            font-weight: 500;
+            font-size: 0.9rem;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
         }
 
         .subscribe-form button:hover {
-            background-color: #008fdb;
+            background-color: rgba(0, 168, 255, 0.18);
+            border-color: rgba(0, 168, 255, 0.5);
+            transform: translateY(-1px);
+        }
+
+        /* --- Social Links --- */
+        .social-links {
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+
+        .social-links .section-label {
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #3a4a5a;
+            margin-bottom: 18px;
+        }
+
+        .social-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .social-row a {
+            color: #4a5a6a;
+            font-size: 1.3rem;
+            transition: color 0.4s ease, transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-row a:hover {
+            color: #00A8FF;
             transform: translateY(-2px);
         }
 
-        /* --- Social Media Links --- */
-        .social-links h3 {
-            font-size: 1rem;
-            font-weight: 400;
-            color: #888;
-            margin-bottom: 15px;
+        .social-row a .hf-emoji {
+            font-size: 1.4rem;
+            filter: grayscale(100%) brightness(0.4);
+            transition: filter 0.4s ease, transform 0.3s ease;
+            display: inline-block;
         }
 
-        .social-links a {
-            color: #B0B0B0;
-            font-size: 1.5rem;
-            margin: 0 15px;
-            transition: color 0.3s ease, transform 0.3s ease;
+        .social-row a:hover .hf-emoji {
+            filter: grayscale(0%) brightness(1);
+            transform: translateY(-2px);
         }
 
-        .social-links a:hover {
-            color: #00A8FF;
-            transform: scale(1.1);
+        /* --- Footer --- */
+        .site-footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            animation: fadeIn 1.5s ease-out 1.2s both;
         }
-        
-        /* --- Responsive Design --- */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 3rem;
+
+        .site-footer p {
+            font-size: 0.7rem;
+            color: #2a3a4a;
+            letter-spacing: 2px;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-            h2 {
-                font-size: 1.2rem;
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- Stars / Particles --- */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            background: rgba(0, 168, 255, 0.5);
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            animation-delay: var(--delay);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 600px) {
+            .logo-mark {
+                font-size: 3.5rem;
+                letter-spacing: 5px;
+            }
+            .tagline {
+                font-size: 0.8rem;
+                letter-spacing: 4px;
+            }
+            .nav-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
             }
             .subscribe-form {
                 flex-direction: column;
@@ -157,44 +429,91 @@
                 max-width: none;
             }
         }
-
     </style>
 </head>
 <body>
 
-    <main class="container">
-        <h1>MFN<span style="color:#00aaff">IV</span></h1>
-        <h2>A New Digital Presence is Under Construction.</h2>
-        <p>Get ready for a showcase of professional endeavors, musings, and projects. Enter your email below to be notified when the full site goes live.</p>
+    <!-- Ambient background glows -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
 
-        <form class="subscribe-form" action="https://formspree.io/f/mnnvqada" method="post">
-            <input type="email" name="email" placeholder="your.email@example.com" required>
-            <button type="submit">Notify Me</button>
-        </form>
+    <!-- Star particles -->
+    <div class="stars" id="stars"></div>
 
-        <div class="social-links">
-            <h3>Connect with me now:</h3>
-            <a href="https://github.com/mfniv" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-            <a href="https://www.linkedin.com/in/mfniv" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-	<a href="https://mfniv.substack.com/" target="_blank" aria-label="Substack"><i class="fas fa-newspaper"></i></a>
-	<a href="https://huggingface.co/dotoking" target="_blank" aria-label="Hugging Face">🤗</a>
+    <div class="page-wrapper">
+        <main class="container">
 
-        </div>
-	<div style="text-align: center; margin-top: 45px;">
-  <div style="margin-bottom: 10px;">
-    <a href="games/" style="display: inline-block; width: 200px; padding: 10px 0; background: #0044cc; color: white; text-decoration: none; font-size: 16px; border-radius: 5px;">
-      🎮 Pass the time
-    </a>
-  </div>
-  <div>
-    <a href="projects/" style="display: inline-block; width: 200px; padding: 10px 0; background: #0044cc; color: white; text-decoration: none; font-size: 16px; border-radius: 5px;">
-      🛠️ Projects
-    </a>
-  </div>
-</div>
+            <h1 class="logo-mark">MFN<span class="accent">IV</span></h1>
+            <p class="tagline">Builder &middot; Thinker &middot; Maker</p>
 
-    </main>
-	
+            <div class="divider"></div>
+
+            <p class="intro">
+                Welcome to the quiet corner of the internet where <strong>ideas take shape</strong>.
+                Here you'll find projects born from curiosity, experiments that refused to stay hypothetical,
+                and the occasional musing on where technology meets craft.
+            </p>
+
+            <!-- Navigation -->
+            <div class="nav-grid">
+                <a href="projects/" class="nav-card">
+                    <span class="card-icon">&#9670;</span>
+                    <span class="card-label">Projects</span>
+                    <span class="card-sub">Things I've built</span>
+                </a>
+                <a href="games/" class="nav-card">
+                    <span class="card-icon">&#9656;</span>
+                    <span class="card-label">Games</span>
+                    <span class="card-sub">Pass the time</span>
+                </a>
+            </div>
+
+            <!-- Email -->
+            <div class="email-section">
+                <p class="section-label">Stay in the loop</p>
+                <form class="subscribe-form" action="https://formspree.io/f/mnnvqada" method="post">
+                    <input type="email" name="email" placeholder="your.email@example.com" required>
+                    <button type="submit">Notify Me</button>
+                </form>
+            </div>
+
+            <!-- Social -->
+            <div class="social-links">
+                <p class="section-label">Elsewhere</p>
+                <div class="social-row">
+                    <a href="https://github.com/mfniv" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/mfniv" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://mfniv.substack.com/" target="_blank" aria-label="Substack"><i class="fas fa-newspaper"></i></a>
+                    <a href="https://huggingface.co/dotoking" target="_blank" aria-label="Hugging Face"><span class="hf-emoji">&#129303;</span></a>
+                </div>
+            </div>
+
+            <footer class="site-footer">
+                <p>&copy; MFNIV</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <script>
+        // Generate subtle star particles
+        (function() {
+            var container = document.getElementById('stars');
+            var count = 60;
+            for (var i = 0; i < count; i++) {
+                var star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.setProperty('--duration', (4 + Math.random() * 8) + 's');
+                star.style.setProperty('--delay', (Math.random() * 10) + 's');
+                var size = Math.random() < 0.3 ? 2 : 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                container.appendChild(star);
+            }
+        })();
+    </script>
 
 </body>
 </html>
