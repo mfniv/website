@@ -1,77 +1,462 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1HWEWNB73S"></script>
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="../favicon-180x180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1HWEWNB73S');
+</script>
+
   <meta charset="UTF-8">
-  <title>Game Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Games - MFNIV</title>
+  <meta name="description" content="Games and interactive experiences by MFNIV.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #121212;
-      color: #ffffff;
+    * {
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      box-sizing: border-box;
     }
-    h1 {
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #0a0a0f;
+      color: #EAEAEA;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* --- Ambient Background (dual-color for games) --- */
+    .ambient-glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.1;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient-glow.glow-1 {
+      width: 600px;
+      height: 600px;
+      background: #00A8FF;
+      top: -200px;
+      right: -100px;
+      animation: drift1 18s ease-in-out infinite;
+    }
+
+    .ambient-glow.glow-2 {
+      width: 500px;
+      height: 500px;
+      background: #c054ff;
+      bottom: -150px;
+      left: -100px;
+      animation: drift2 22s ease-in-out infinite;
+    }
+
+    .ambient-glow.glow-3 {
+      width: 400px;
+      height: 400px;
+      background: #00ffaa;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.04;
+      animation: pulse 8s ease-in-out infinite;
+    }
+
+    @keyframes drift1 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-80px, 50px); }
+    }
+
+    @keyframes drift2 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(50px, -80px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.03; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.07; transform: translate(-50%, -50%) scale(1.2); }
+    }
+
+    /* --- Stars / Particles (multi-color) --- */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      border-radius: 50%;
+      animation: twinkle var(--duration) ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    /* --- Layout --- */
+    .page-wrapper {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 60px 20px 40px;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
       text-align: center;
-      margin-bottom: 40px;
     }
-    .tile-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      padding: 0 20px;
-    }
-    .tile {
-      background-color: #1e1e1e;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .tile:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 20px rgba(0,0,0,0.8);
-    }
-    .tile a {
-      color: #00bfff;
+
+    /* --- Back Link --- */
+    .back-link {
+      position: absolute;
+      top: 28px;
+      left: 32px;
+      z-index: 10;
+      color: #4a5a6a;
       text-decoration: none;
-      font-weight: bold;
-      font-size: 18px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 1px;
+      transition: color 0.3s ease;
+      animation: fadeIn 1s ease-out;
     }
-    .tile .subtitle {
-      font-size: 14px;
-      color: #bbbbbb;
-      margin-top: 10px;
+
+    .back-link:hover {
+      color: #c054ff;
+    }
+
+    /* --- Page Header --- */
+    .page-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: 6px;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .page-title .accent {
+      background: linear-gradient(135deg, #00A8FF, #c054ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-subtitle {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: #5a6a7a;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      margin-top: 12px;
+      margin-bottom: 16px;
+      animation: fadeInUp 1s ease-out 0.2s both;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(192, 84, 255, 0.25), rgba(0, 168, 255, 0.25), transparent);
+      margin: 0 0 48px;
+      animation: fadeIn 1.5s ease-out 0.4s both;
+    }
+
+    /* --- Game Grid --- */
+    .game-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      animation: fadeInUp 1s ease-out 0.5s both;
+    }
+
+    .game-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(192, 84, 255, 0.08);
+      border-radius: 10px;
+      text-decoration: none;
+      color: #EAEAEA;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-tile::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #c054ff, #00A8FF, transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .game-tile::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      background: radial-gradient(circle at 50% 0%, rgba(192, 84, 255, 0.06), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .game-tile:hover {
+      background: rgba(192, 84, 255, 0.04);
+      border-color: rgba(192, 84, 255, 0.25);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(192, 84, 255, 0.1);
+    }
+
+    .game-tile:hover::before {
+      opacity: 1;
+    }
+
+    .game-tile:hover::after {
+      opacity: 1;
+    }
+
+    .game-icon {
+      font-size: 2rem;
+      margin-bottom: 14px;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .game-tile:hover .game-icon {
+      transform: scale(1.15);
+    }
+
+    .game-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .game-subtitle {
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: #8a9aaa;
+      line-height: 1.5;
+    }
+
+    .game-tag {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 4px 12px;
+      font-size: 0.6rem;
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 20px;
+    }
+
+    .game-tag.playable {
+      color: #00ffaa;
+      border: 1px solid rgba(0, 255, 170, 0.2);
+      background: rgba(0, 255, 170, 0.06);
+    }
+
+    .game-tag.external {
+      color: #c054ff;
+      border: 1px solid rgba(192, 84, 255, 0.2);
+      background: rgba(192, 84, 255, 0.06);
+    }
+
+    /* --- Wide tile spanning full width --- */
+    .game-tile.wide {
+      grid-column: 1 / -1;
+      max-width: 50%;
+      justify-self: center;
+    }
+
+    /* --- Footer --- */
+    .site-footer {
+      margin-top: 60px;
+      padding-top: 20px;
+      animation: fadeIn 1.5s ease-out 0.8s both;
+    }
+
+    .site-footer p {
+      font-size: 0.7rem;
+      color: #2a3a4a;
+      letter-spacing: 2px;
+    }
+
+    /* --- Animations --- */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 600px) {
+      .page-title {
+        font-size: 2rem;
+        letter-spacing: 4px;
+      }
+      .page-subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 3px;
+      }
+      .game-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .game-tile.wide {
+        max-width: 100%;
+      }
+      .back-link {
+        top: 16px;
+        left: 16px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>🎮 MFNIV Game Hub</h1>
-<div class="tile-container">
-<div class="tile">
-<a href="https://cosmopolis-4x-1018183717954.us-west1.run.app/">Cosmopolis 4x</a>
-<div class="subtitle">Conquer Space!</div>
-</div>
-<div class="tile">
-<a href="nyadwv1/">Not Your Average Drill Weekend</a>
-<div class="subtitle">PVT Edition</div>
-</div>
-<div class="tile">
-<a href="nadwo1/">Not Your Average Drill Weekend</a>
-<div class="subtitle">Warrant Edition</div>
-</div>
-<div class="tile">
-<a href="escape-ft-dix/">Escape from Ft. Dix</a>
-<div class="subtitle">Survive and Escape the Air Show Weekend</div>
-</div>
-<div class="tile">
-<a href="https://pixelbucks-barista-887710260624.us-west1.run.app/" class="tile-link" aria-label="Placeholder Coming Soon">
-<div style="color: green;">Pixelbucks</div>
-<div class="subtitle">Starbucks Barista Challenge</div>
-</a>
-</div>
-</div>
+
+  <!-- Ambient background glows -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <!-- Star particles -->
+  <div class="stars" id="stars"></div>
+
+  <a href="../" class="back-link">&larr; MFNIV</a>
+
+  <div class="page-wrapper">
+    <main class="container">
+
+      <h1 class="page-title"><span class="accent">&#9656;</span> Games</h1>
+      <p class="page-subtitle">Pass the time</p>
+
+      <div class="divider"></div>
+
+      <div class="game-grid">
+
+        <a class="game-tile" href="https://cosmopolis-4x-1018183717954.us-west1.run.app/" target="_blank">
+          <span class="game-icon">&#127756;</span>
+          <div class="game-title">Cosmopolis 4X</div>
+          <div class="game-subtitle">Conquer Space!</div>
+          <span class="game-tag external">Web App</span>
+        </a>
+
+        <a class="game-tile" href="nyadwv1/">
+          <span class="game-icon">&#128164;</span>
+          <div class="game-title">NADW</div>
+          <div class="game-subtitle">PVT Edition</div>
+          <span class="game-tag playable">Play Now</span>
+        </a>
+
+        <a class="game-tile" href="nadwo1/">
+          <span class="game-icon">&#9749;</span>
+          <div class="game-title">NADW</div>
+          <div class="game-subtitle">Warrant Edition</div>
+          <span class="game-tag playable">Play Now</span>
+        </a>
+
+        <a class="game-tile" href="escape-ft-dix/">
+          <span class="game-icon">&#128694;</span>
+          <div class="game-title">Escape from Ft. Dix</div>
+          <div class="game-subtitle">Survive the Air Show Weekend</div>
+          <span class="game-tag playable">Play Now</span>
+        </a>
+
+        <a class="game-tile wide" href="https://pixelbucks-barista-887710260624.us-west1.run.app/" target="_blank">
+          <span class="game-icon">&#9749;</span>
+          <div class="game-title">Pixelbucks</div>
+          <div class="game-subtitle">Starbucks Barista Challenge</div>
+          <span class="game-tag external">Web App</span>
+        </a>
+
+      </div>
+
+      <footer class="site-footer">
+        <p>&copy; MFNIV</p>
+      </footer>
+
+    </main>
+  </div>
+
+  <script>
+    (function() {
+      var container = document.getElementById('stars');
+      var count = 80;
+      var colors = [
+        'rgba(0, 168, 255, 0.5)',
+        'rgba(192, 84, 255, 0.5)',
+        'rgba(0, 255, 170, 0.4)'
+      ];
+      for (var i = 0; i < count; i++) {
+        var star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.background = colors[Math.floor(Math.random() * colors.length)];
+        star.style.setProperty('--duration', (3 + Math.random() * 6) + 's');
+        star.style.setProperty('--delay', (Math.random() * 8) + 's');
+        var size = Math.random() < 0.3 ? 2 : 1;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        container.appendChild(star);
+      }
+    })();
+  </script>
+
 </body>
 </html>
