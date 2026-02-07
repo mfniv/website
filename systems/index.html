@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1HWEWNB73S"></script>
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="../favicon-180x180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1HWEWNB73S');
+</script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Systems - MFNIV</title>
+  <meta name="description" content="Professional systems and tools by MFNIV.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #0a0a0f;
+      color: #EAEAEA;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* --- Ambient Background --- */
+    .ambient-glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.08;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient-glow.glow-1 {
+      width: 600px;
+      height: 600px;
+      background: #00A8FF;
+      top: -200px;
+      right: -100px;
+      animation: drift1 20s ease-in-out infinite;
+    }
+
+    .ambient-glow.glow-2 {
+      width: 500px;
+      height: 500px;
+      background: #00A8FF;
+      bottom: -150px;
+      left: -100px;
+      animation: drift2 25s ease-in-out infinite;
+    }
+
+    @keyframes drift1 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-60px, 40px); }
+    }
+
+    @keyframes drift2 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(40px, -60px); }
+    }
+
+    /* --- Stars / Particles --- */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      background: rgba(0, 168, 255, 0.5);
+      border-radius: 50%;
+      animation: twinkle var(--duration) ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    /* --- Layout --- */
+    .page-wrapper {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 60px 20px 40px;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* --- Back Link --- */
+    .back-link {
+      position: absolute;
+      top: 28px;
+      left: 32px;
+      z-index: 10;
+      color: #4a5a6a;
+      text-decoration: none;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 1px;
+      transition: color 0.3s ease;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .back-link:hover {
+      color: #00A8FF;
+    }
+
+    /* --- Page Header --- */
+    .page-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: 6px;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .page-title .accent {
+      color: #00A8FF;
+      text-shadow: 0 0 30px rgba(0, 168, 255, 0.4),
+                   0 0 60px rgba(0, 168, 255, 0.15);
+    }
+
+    .page-subtitle {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: #5a6a7a;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      margin-top: 12px;
+      margin-bottom: 16px;
+      animation: fadeInUp 1s ease-out 0.2s both;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 168, 255, 0.2), transparent);
+      margin: 0 0 48px;
+      animation: fadeIn 1.5s ease-out 0.4s both;
+    }
+
+    /* --- Project Grid --- */
+    .project-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      animation: fadeInUp 1s ease-out 0.5s both;
+    }
+
+    .project-tile {
+      display: block;
+      padding: 28px 24px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(0, 168, 255, 0.08);
+      border-radius: 8px;
+      text-decoration: none;
+      color: #EAEAEA;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .project-tile::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 168, 255, 0.3), transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .project-tile:hover {
+      background: rgba(0, 168, 255, 0.04);
+      border-color: rgba(0, 168, 255, 0.2);
+      transform: translateY(-3px);
+    }
+
+    .project-tile:hover::before {
+      opacity: 1;
+    }
+
+    .project-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .project-title .title-accent {
+      color: #00A8FF;
+    }
+
+    .project-desc {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: #8a9aaa;
+      line-height: 1.7;
+    }
+
+    .project-tag {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 4px 12px;
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #00A8FF;
+      border: 1px solid rgba(0, 168, 255, 0.2);
+      border-radius: 20px;
+      background: rgba(0, 168, 255, 0.06);
+    }
+
+    .project-tag.coming-soon {
+      color: #5a6a7a;
+      border-color: rgba(90, 106, 122, 0.2);
+      background: rgba(90, 106, 122, 0.06);
+    }
+
+    /* --- Footer --- */
+    .site-footer {
+      margin-top: 60px;
+      padding-top: 20px;
+      animation: fadeIn 1.5s ease-out 0.8s both;
+    }
+
+    .site-footer p {
+      font-size: 0.7rem;
+      color: #2a3a4a;
+      letter-spacing: 2px;
+    }
+
+    /* --- Animations --- */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 600px) {
+      .page-title {
+        font-size: 2rem;
+        letter-spacing: 4px;
+      }
+      .page-subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 3px;
+      }
+      .project-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .back-link {
+        top: 16px;
+        left: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient background glows -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- Star particles -->
+  <div class="stars" id="stars"></div>
+
+  <a href="../" class="back-link">&larr; MFNIV</a>
+
+  <div class="page-wrapper">
+    <main class="container">
+
+      <h1 class="page-title"><span class="accent">&#9670;</span> Systems</h1>
+      <p class="page-subtitle">Things I've built</p>
+
+      <div class="divider"></div>
+
+      <div class="project-grid">
+
+        <a class="project-tile" href="https://account-scout.cummerbund.org/" target="_blank">
+          <div class="project-title">Account <span class="title-accent">Scout</span></div>
+          <div class="project-desc">Webapp for helping to identify and track your online footprint. Connects to your email providers to securely identify accounts and associated account data. Sort and filter to discover, uncover, and manage your accounts.</div>
+          <span class="project-tag">In Testing</span>
+        </a>
+
+        <a class="project-tile" href="https://wwmad.org" target="_blank">
+          <div class="project-title">WWM<span class="title-accent">AD</span></div>
+          <div class="project-desc">"What Would Marcus Aurelius Do?" Seek counsel with history's most famous Stoic thinkers. Research and testing methods that improve LLM output consistency through one of its most challenging lenses: Philosophy.</div>
+          <span class="project-tag">In Testing</span>
+        </a>
+
+        <a class="project-tile" href="https://equibalancepro.com/" target="_blank">
+          <div class="project-title">Equi<span class="title-accent">Balance</span> Pro</div>
+          <div class="project-desc">A portfolio rebalancing tool. Import your portfolio, customize parameters, add or raise cash, and get trade recommendations.</div>
+          <span class="project-tag">Live</span>
+          <span class="game-tag external">Web App</span>
+        </a>
+
+        <a class="project-tile" href="https://studio--fasttrack-s3d51.us-central1.hosted.app" target="_blank">
+          <div class="project-title">Fast<span class="title-accent">Track</span></div>
+          <div class="project-desc">Webapp for planning, building, and tracking your intermittent fasting habit.</div>
+          <span class="project-tag">In Development</span>
+        </a>
+
+        <a class="project-tile" href="https://tackytinsel.com" target="_blank">
+          <div class="project-title">Tacky <span class="title-accent">Tinsel</span></div>
+          <div class="project-desc">Project launching soon. Check back for updates and early access opportunities.</div>
+          <span class="project-tag coming-soon">Coming Soon</span>
+        </a>
+
+        <a class="project-tile" href="https://cummerbund.org" target="_blank">
+          <div class="project-title">Cummer<span class="title-accent">bund</span></div>
+          <div class="project-desc">Project launching soon. Check back for updates and early access opportunities.</div>
+          <span class="project-tag coming-soon">Coming Soon</span>
+        </a>
+
+      </div>
+
+      <footer class="site-footer">
+        <p>&copy; MFNIV</p>
+      </footer>
+
+    </main>
+  </div>
+
+  <script>
+    (function() {
+      var container = document.getElementById('stars');
+      var count = 60;
+      for (var i = 0; i < count; i++) {
+        var star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.setProperty('--duration', (4 + Math.random() * 8) + 's');
+        star.style.setProperty('--delay', (Math.random() * 10) + 's');
+        var size = Math.random() < 0.3 ? 2 : 1;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        container.appendChild(star);
+      }
+    })();
+  </script>
+
+</body>
+</html>
