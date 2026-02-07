@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1HWEWNB73S"></script>
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="../favicon-180x180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1HWEWNB73S');
+</script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research - MFNIV</title>
+  <meta name="description" content="Whitepapers, architecture proposals, and design documents by MFNIV.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient background glows -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- Star particles -->
+  <div class="stars" id="stars"></div>
+
+  <a href="../" class="back-link" aria-label="Back to MFNIV home">&larr; MFNIV</a>
+
+  <div class="hub-wrapper">
+    <main class="hub-container">
+
+      <h1 class="hub-title"><span class="accent">&#9670;</span> Research</h1>
+      <p class="hub-subtitle">Whitepapers &amp; Architecture</p>
+
+      <div class="divider"></div>
+
+      <div class="paper-grid">
+
+        <!-- Card 1: Delegated Agents -->
+        <a class="paper-card" href="delegated-agents/">
+          <div class="paper-card-title">Delegated <span class="title-accent">Agents</span></div>
+          <p class="paper-card-blurb">A framework for securely delegating tasks to autonomous AI agents with bounded authority, credential isolation, and auditable action chains.</p>
+          <div class="paper-card-date">Updated Feb 2026</div>
+          <div>
+            <span class="tag tag-draft">Draft</span>
+            <span class="tag tag-topic">AI Agents</span>
+            <span class="tag tag-topic">Security</span>
+          </div>
+        </a>
+
+        <!-- Card 2: Placeholder – add more papers here -->
+        <div class="paper-card" style="pointer-events:none; opacity:0.45;">
+          <div class="paper-card-title">Next <span class="title-accent">Paper</span></div>
+          <p class="paper-card-blurb">More research coming soon. Check back for new whitepapers and architecture proposals.</p>
+          <div class="paper-card-date">&mdash;</div>
+          <div>
+            <span class="tag tag-soon">Coming Soon</span>
+          </div>
+        </div>
+
+      </div>
+
+      <footer class="site-footer">
+        <p>&copy; MFNIV</p>
+      </footer>
+
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>

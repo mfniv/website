@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1HWEWNB73S"></script>
+<link rel="icon" href="../../favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="../../favicon-180x180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1HWEWNB73S');
+</script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delegated Agents - Research - MFNIV</title>
+  <meta name="description" content="A framework for securely delegating tasks to autonomous AI agents with bounded authority, credential isolation, and auditable action chains.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <!-- Ambient background glows -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- Star particles -->
+  <div class="stars" id="stars"></div>
+
+  <!-- Mobile sidebar toggle -->
+  <button class="sidebar-toggle"
+          id="sidebar-toggle"
+          aria-label="Toggle table of contents"
+          aria-expanded="false"
+          aria-controls="paper-sidebar">
+    &#9776;
+  </button>
+
+  <!-- Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <div class="paper-layout">
+
+    <!-- Left Sidebar – Table of Contents -->
+    <nav class="paper-sidebar" id="paper-sidebar" aria-label="Table of contents">
+      <a href="../" class="sidebar-back">&larr; Back to Research</a>
+
+      <div class="sidebar-title">Contents</div>
+      <ul class="sidebar-nav">
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#problem">Problem</a></li>
+        <li><a href="#proposed-solution">Proposed Solution</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#security">Security Considerations</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#appendix">Appendix</a></li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <article class="paper-content">
+
+      <!-- Paper Metadata Header -->
+      <header class="paper-meta">
+        <h1 class="paper-title">Delegated <span class="accent">Agents</span></h1>
+
+        <div class="paper-meta-row">
+          <span class="tag tag-draft">Draft</span>
+          <span class="paper-date">Last updated: February 2026</span>
+        </div>
+
+        <div class="paper-tags">
+          <span class="tag tag-topic">AI Agents</span>
+          <span class="tag tag-topic">Security</span>
+          <span class="tag tag-topic">Architecture</span>
+          <span class="tag tag-topic">Delegation</span>
+        </div>
+
+        <div class="paper-actions">
+          <a href="delegated-agents.pdf" class="btn btn-primary" download>
+            <span>&#8595;</span> Download PDF
+          </a>
+          <a href="https://github.com/mfniv" class="btn btn-secondary" target="_blank" rel="noopener">
+            <span>&#128279;</span> View on GitHub
+          </a>
+        </div>
+
+        <div class="paper-meta-divider"></div>
+      </header>
+
+      <!-- Section: Overview -->
+      <section class="paper-section" id="overview">
+        <h2>Overview</h2>
+        <p>
+          As large language models evolve from chat interfaces into autonomous agents capable of
+          executing multi-step workflows, a critical challenge emerges: how do we delegate real-world
+          authority to an AI system without relinquishing control?
+        </p>
+        <p>
+          This paper proposes a <strong>Delegated Agent Framework</strong>&mdash;a set of architectural
+          patterns and security primitives that allow a human principal to grant bounded, revocable
+          authority to an AI agent. The framework ensures every action is auditable, every credential
+          is isolated, and every delegation chain terminates at a well-defined trust boundary.
+        </p>
+      </section>
+
+      <!-- Section: Problem -->
+      <section class="paper-section" id="problem">
+        <h2>Problem</h2>
+        <p>
+          Current agent architectures suffer from several fundamental issues when deployed in
+          production environments:
+        </p>
+        <ul>
+          <li><strong>Ambient authority</strong> &mdash; agents inherit the full credential set of the user, far exceeding the permissions needed for any single task.</li>
+          <li><strong>Opaque action chains</strong> &mdash; multi-step workflows produce side effects that are difficult to trace back to a specific delegation decision.</li>
+          <li><strong>No revocation path</strong> &mdash; once an agent is granted access, there is no standard mechanism to narrow or revoke that access mid-task.</li>
+          <li><strong>Trust transitivity</strong> &mdash; agents that call sub-agents propagate trust implicitly, creating unbounded delegation chains.</li>
+        </ul>
+        <p>
+          These problems compound as agent autonomy increases. A booking agent that can read your
+          calendar, send emails, and charge your credit card holds more ambient authority than most
+          human assistants&mdash;yet operates with fewer guardrails.
+        </p>
+      </section>
+
+      <!-- Section: Proposed Solution -->
+      <section class="paper-section" id="proposed-solution">
+        <h2>Proposed Solution</h2>
+        <p>
+          The Delegated Agent Framework introduces three core primitives:
+        </p>
+
+        <h3>1. Delegation Tokens</h3>
+        <p>
+          Short-lived, scoped credentials that encode exactly what an agent is allowed to do. Each
+          token specifies permitted actions, target resources, time-to-live, and maximum cost. Tokens
+          are cryptographically signed by the delegating principal.
+        </p>
+
+        <h3>2. Action Ledger</h3>
+        <p>
+          An append-only log of every action taken by every agent in a delegation chain. Each entry
+          references the delegation token that authorized it, creating a full audit trail from
+          principal decision to system side-effect.
+        </p>
+
+        <h3>3. Trust Boundaries</h3>
+        <p>
+          Explicit checkpoints where delegation chains must be re-authorized. When an agent needs to
+          call a sub-agent, the trust boundary enforces scope narrowing&mdash;the sub-agent can never
+          receive more authority than its parent holds.
+        </p>
+      </section>
+
+      <!-- Section: Architecture -->
+      <section class="paper-section" id="architecture">
+        <h2>Architecture</h2>
+        <p>
+          The system is composed of four layers:
+        </p>
+
+        <h3>Principal Layer</h3>
+        <p>
+          The human user (or an authorized system) that initiates a task and creates the root
+          delegation token. This layer owns the master credentials and defines the maximum authority
+          envelope.
+        </p>
+
+        <h3>Orchestration Layer</h3>
+        <p>
+          A coordination service that receives delegation tokens, spawns agent instances, and
+          manages the action ledger. It enforces token validation before any agent can execute.
+        </p>
+
+        <h3>Agent Layer</h3>
+        <p>
+          Individual agent instances that perform specific tasks. Each agent receives a scoped
+          delegation token and can only interact with resources permitted by that token. Agents may
+          request sub-delegations through the orchestration layer.
+        </p>
+
+        <h3>Resource Layer</h3>
+        <p>
+          External systems (APIs, databases, file systems) that validate delegation tokens before
+          granting access. Resources enforce the principle of least privilege at the boundary.
+        </p>
+
+        <pre><code>Principal
+    |
+    v
+[Delegation Token: scope=calendar.read, ttl=300s]
+    |
+    v
+Orchestrator  -->  Action Ledger
+    |
+    v
+Agent-A (calendar.read)
+    |
+    +--[Sub-delegation: scope=email.draft, ttl=60s]
+    |       |
+    |       v
+    |   Agent-B (email.draft)
+    |
+    v
+Resource Layer (Calendar API, Email API)</code></pre>
+      </section>
+
+      <!-- Section: Security Considerations -->
+      <section class="paper-section" id="security">
+        <h2>Security Considerations</h2>
+        <p>
+          The framework addresses several threat models:
+        </p>
+
+        <h3>Token Theft</h3>
+        <p>
+          Delegation tokens are short-lived and scoped. Even if intercepted, a stolen token can only
+          perform the specific actions it was issued for, within its TTL window. Tokens include a
+          binding to the agent instance ID, preventing replay from a different context.
+        </p>
+
+        <h3>Privilege Escalation</h3>
+        <p>
+          The trust boundary layer enforces monotonic scope narrowing. A sub-agent cannot request
+          permissions beyond what its parent holds. The orchestrator validates every sub-delegation
+          request against the parent's active token.
+        </p>
+
+        <h3>Prompt Injection</h3>
+        <p>
+          Because agents operate with scoped tokens rather than ambient credentials, a successful
+          prompt injection is limited to the authority granted by the current token. The action
+          ledger provides forensic data to detect and investigate anomalous behavior.
+        </p>
+
+        <h3>Audit & Compliance</h3>
+        <p>
+          The append-only action ledger satisfies common audit requirements. Each entry includes
+          timestamp, agent ID, delegation token hash, action type, target resource, and result
+          status. The ledger can be exported to SIEM systems for real-time monitoring.
+        </p>
+      </section>
+
+      <!-- Section: Roadmap -->
+      <section class="paper-section" id="roadmap">
+        <h2>Roadmap</h2>
+        <p>
+          Development of the Delegated Agent Framework follows a phased approach:
+        </p>
+        <ul>
+          <li><strong>Phase 1 &mdash; Specification</strong>: Formalize the delegation token schema, action ledger format, and trust boundary protocol. Publish as an open specification.</li>
+          <li><strong>Phase 2 &mdash; Reference Implementation</strong>: Build a reference orchestrator and SDK libraries (Python, TypeScript) for agent developers.</li>
+          <li><strong>Phase 3 &mdash; Integration Pilots</strong>: Partner with agent framework providers to integrate delegation primitives into existing platforms.</li>
+          <li><strong>Phase 4 &mdash; Ecosystem</strong>: Develop tooling for token inspection, ledger visualization, and compliance reporting.</li>
+        </ul>
+      </section>
+
+      <!-- Section: Appendix -->
+      <section class="paper-section" id="appendix">
+        <h2>Appendix</h2>
+
+        <h3>A. Delegation Token Schema (Draft)</h3>
+        <pre><code>{
+  "version": "0.1.0",
+  "issuer": "principal:mike@mfniv.com",
+  "subject": "agent:booking-agent-01",
+  "scope": ["calendar.read", "email.draft"],
+  "resources": ["calendar:primary", "email:drafts"],
+  "max_cost_usd": 0,
+  "ttl_seconds": 300,
+  "issued_at": "2026-02-07T12:00:00Z",
+  "nonce": "a1b2c3d4",
+  "signature": "..."
+}</code></pre>
+
+        <h3>B. Related Work</h3>
+        <ul>
+          <li>OAuth 2.0 Scoped Tokens (RFC 6749)</li>
+          <li>SPIFFE / SPIRE for workload identity</li>
+          <li>Google Zanzibar for relationship-based access control</li>
+          <li>Capability-based security (E language, Capsicum)</li>
+        </ul>
+
+        <h3>C. Glossary</h3>
+        <ul>
+          <li><strong>Principal</strong> &mdash; The entity that initiates delegation (typically a human user).</li>
+          <li><strong>Agent</strong> &mdash; An autonomous process that acts on behalf of a principal.</li>
+          <li><strong>Delegation Token</strong> &mdash; A scoped, time-limited credential authorizing specific actions.</li>
+          <li><strong>Action Ledger</strong> &mdash; An append-only audit log of all agent actions.</li>
+          <li><strong>Trust Boundary</strong> &mdash; A checkpoint where delegation chains must be re-authorized.</li>
+        </ul>
+      </section>
+
+      <footer class="site-footer">
+        <p>&copy; MFNIV</p>
+      </footer>
+
+    </article>
+  </div>
+
+  <script src="../script.js"></script>
+
+</body>
+</html>
